@@ -84,12 +84,15 @@ class ExtractiveSummariser(BaseSummariser):
         return " ".join(summarize_text), len(sentences)
 
 
-def generate_summary_of_paragraphs(list_of_paragraphs: List[str]) -> List[str]:
+def generate_summary_of_paragraphs(list_of_paragraphs: List[str], summary_func: Optional = None) -> List[str]:
     summary_list = []
     for para in list_of_paragraphs:
         top_n = math.ceil(0.2 * len(para.split(".")[:-1]))
-        extractive_summariser = ExtractiveSummariser(para, top_n)
-        extractive_summary, _ = extractive_summariser.generate_summary()
+        if summary_func is None:
+            extractive_summariser = ExtractiveSummariser(para, top_n)
+            extractive_summary, _ = extractive_summariser.generate_summary()
+        else:
+            extractive_summary = summary_func(para)
         summary_list.append(extractive_summary)
 
     return summary_list
