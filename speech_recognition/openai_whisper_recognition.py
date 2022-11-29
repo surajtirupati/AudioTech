@@ -85,22 +85,21 @@ if __name__ == "__main__":
     paragraph_list, paragraphed_transcript = generate_paragraphs(final_transcript)
 
     #  Storing the paragraph text
-    with open('../audio_conversions/{}'.format(txt_filename), 'w') as f:
+    with open('../audio_conversions/{}_Transcript.txt'.format(txt_filename.split(".")[0]), 'w') as f:
         f.write(paragraphed_transcript)
 
     #  Aggregating paragraphs for summarisation
     aggregated_para_list, _ = generate_paragraphs_from_treated_sentences(paragraph_list, False)
 
-    #  TODO: Needs work - you need to order sentences in the summary according to where they appear in the original text
     #  Summarisation of aggregated paragraphs
     summary_list = generate_summary_of_paragraphs(aggregated_para_list, gpt2_summariser)
 
-    #  TODO: Concatenating summarised paragraphs into sub paragraphs that read like a script
+    #  Concatenating summarised paragraphs into sub paragraphs that read like a script
     summary = ""
 
     for para in summary_list:
         summary += f'{para}\n\n'
 
-    with open('../audio_conversions/{}'.format(txt_filename), 'w') as f:
-        f.write(paragraphed_transcript)
-
+    #  Storing summarised (teaser) transcript
+    with open('../audio_conversions/{}_Summary.txt'.format(txt_filename.split(".")[0]), 'w') as f:
+        f.write(summary)
