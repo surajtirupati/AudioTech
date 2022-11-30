@@ -1,7 +1,7 @@
 from typing import Callable
 from whisper import load_model
 
-from utils.string_utils import convert_text_to_torch_input, append_file_extension
+from utils.string_utils import convert_text_to_torch_input, append_file_extension, generate_transcript_from_list_of_para
 from summarisation.extractive_summarisation import generate_summary_of_paragraphs
 from summarisation.gpt2_summarisation import gpt2_summariser
 from summarisation.paragraphing import generate_paragraphs, generate_paragraphs_from_treated_sentences
@@ -95,10 +95,7 @@ if __name__ == "__main__":
     summary_list = generate_summary_of_paragraphs(aggregated_para_list, gpt2_summariser)
 
     #  Concatenating summarised paragraphs into sub paragraphs that read like a script
-    summary = ""
-
-    for para in summary_list:
-        summary += f'{para}\n\n'
+    summary = generate_transcript_from_list_of_para(summary_list)
 
     #  Storing summarised (teaser) transcript
     with open('../audio_conversions/{}_Summary.txt'.format(txt_filename.split(".")[0]), 'w') as f:

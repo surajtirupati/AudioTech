@@ -90,3 +90,12 @@ def convert_sent_list_to_torch_input(sentences: List[str]):
         sent_word_lists.append(temp_sent)
 
     return sent_word_lists
+
+
+def generate_transcript_from_list_of_para(para_list: List[str]):
+    summary = ""
+
+    for para in para_list:
+        summary += f'{para}\n\n'
+
+    return summary
