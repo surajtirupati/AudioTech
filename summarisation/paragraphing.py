@@ -54,8 +54,12 @@ def treat_sentences(sentences: List[str], no_std: int = 2):
     extending = False
     for each in sentences:
         if extending:
-            each = " " + each[1].lower() + each[2:]
-            print()
+            try:
+                each = " " + each[1].lower() + each[2:]
+            #  Catching instances where sentences are only one letter implying an error
+            except IndexError:
+                #  Setting the sentence to an empty string and not keeping that char in final transcript
+                each = ""
 
         if len(each) < short:
             text += f'{each}'

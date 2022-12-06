@@ -13,7 +13,7 @@ def remove_special_characters(title: str):
     return title
 
 
-def remove_char(string, char):
+def remove_char(string: str, char: str):
     # find total no. of
     # occurrence of character
     counts = string.count(char)
@@ -72,9 +72,9 @@ def count_char(string: str, char: str):
     return string.count(char)
 
 
-def convert_text_to_torch_input(string, seperator='|'):
+def convert_text_to_torch_input(string: str, separator: str = '|'):
     regex = re.compile("[^a-zA-Z0-9']")
-    regex = regex.sub(seperator, string)
+    regex = regex.sub(separator, string)
     regex = remove_char(regex, "'")
     regex = [re.sub('(\d+)', lambda m: num2words(m.group()), sentence) for sentence in [regex]][0]
     regex = regex.upper()
@@ -92,10 +92,15 @@ def convert_sent_list_to_torch_input(sentences: List[str]):
     return sent_word_lists
 
 
-def generate_transcript_from_list_of_para(para_list: List[str]):
+def generate_transcript_from_list_of_para(para_list: List[str], bullet_points: bool = False):
     summary = ""
 
     for para in para_list:
-        summary += f'{para}\n\n'
+
+        if not bullet_points:
+            summary += f'{para}\n\n'
+
+        else:
+            summary += f'{para}\n'
 
     return summary

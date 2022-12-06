@@ -3,7 +3,7 @@ from nltk.tokenize import sent_tokenize
 
 from utils.string_utils import convert_sent_list_to_torch_input
 from utils.list_utils import subfinder
-from utils.audio_slicer_utils import SilenceAudioSlicer
+from utils.audio_utils import SilenceAudioSlicer
 from speech_recognition.openai_whisper_recognition import BatchRecognition, audio_to_text_whisper
 from forced_alignment.torch_alignment import TorchBatchAligner
 
