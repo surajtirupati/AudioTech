@@ -1,5 +1,6 @@
 from typing import Callable
 from nltk.tokenize import sent_tokenize
+from typing import List, Tuple, Dict, Union, Any
 
 from utils.string_utils import convert_sent_list_to_torch_input
 from utils.list_utils import subfinder
@@ -11,13 +12,33 @@ from forced_alignment.torch_alignment import TorchBatchAligner
 class TimeStamper:
 
     def __init__(self, audio_file_name: str, output_folder: str, recogniser_func: Callable, **kwargs):
+        """
+
+        Parameters
+        ----------
+        audio_file_name: name of audio file to timestamp
+        output_folder: relative location of audio folder where the file is found
+        recogniser_func: speech to recognition method to be used
+        kwargs: extra arguments e.g. name of whisper model to use
+        """
         self.audio_file_name = audio_file_name
         self.output_folder = output_folder
         self.recogniser_func = recogniser_func
         self.kwargs = kwargs
         self.slicer = SilenceAudioSlicer(self.audio_file_name, self.output_folder)
 
-    def generate_timestamp_tuple(self):
+    def generate_timestamp_tuple(self) -> List[Tuple]:
+        """
+        1) Converts original audio file into slices in output_folder.
+        2) Conducts batch recognition on each file in folder retrieving a dictionary (br.transcript_dict) of each file and
+        it's corresponding transcript - default is to store transcript in torch text format (capitals delineated with '|'.
+        3) Initialise torch batch aligner object and produce the timestamped tuple where each word is timestamped with a
+        start and end time.
+        Returns
+        -------
+        Timestamped tuple of every word in the transcript with its start and end time: (Word, Start time, End time)
+        """
+        #  Splitting audio file
         no_slices, durations = self.slicer.export_splits()
 
         # Batch recognition
@@ -30,8 +51,18 @@ class TimeStamper:
 
         return timestamp_tuple
 
-    def sentence_timestamper(self, exec_sum: str):
-        sentences = sent_tokenize(exec_sum)
+    def sentence_timestamper(self, text_to_match: str) -> Dict[int, Dict[str, Union[Union[str, tuple], Any]]]:
+        """
+        This method finds the timestamps of each sentence within the text_to_match input
+        Parameters
+        ----------
+        text_to_match: input text from the original transcript that is trying to be matched
+
+        Returns
+        -------
+        Dictionary containing each sentence from text_to_match and it's start and end times
+        """
+        sentences = sent_tokenize(text_to_match)
         sent_word_lists = convert_sent_list_to_torch_input(sentences)
         ts_tuple = self.generate_timestamp_tuple()
         words = [tup[0] for tup in ts_tuple]

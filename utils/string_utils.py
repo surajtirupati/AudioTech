@@ -1,6 +1,5 @@
 import re
 from num2words import num2words
-from nltk.tokenize import sent_tokenize
 from typing import List
 
 

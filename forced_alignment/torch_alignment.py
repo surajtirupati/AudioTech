@@ -1,7 +1,7 @@
 import torch
 import torchaudio
 from dataclasses import dataclass
-import IPython
+from typing import List, Tuple
 
 
 @dataclass
@@ -154,7 +154,7 @@ class TorchAligner:
 
         return word_segments
 
-    def generate_timestamp_tuple(self, offset: int = 0):
+    def generate_timestamp_tuple(self, offset: int = 0) -> List[Tuple]:
         self.trellis = self.get_trellis()
         path = self.backtrack(self.trellis)
         segments = self.merge_repeats(path)
@@ -169,7 +169,7 @@ class TorchAligner:
 
         return timestamp_tuple
 
-    def return_timestamp_of_segment(self, word_segments: list, i: int):
+    def return_timestamp_of_segment(self, word_segments: list, i: int) -> Tuple[float, float]:
         ratio = self.waveform.size(1) / (self.trellis.size(0) - 1)
         word = word_segments[i]
         x0 = int(ratio * word.start)
