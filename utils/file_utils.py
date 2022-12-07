@@ -38,3 +38,19 @@ def mp4_to_wav(file_path):
     sound = AudioSegment.from_file(file_path, format="mp4")
     sound.export(dest, format="wav")
     return
+
+
+def save_txt_file(file_path: str, file_contents: str):
+    """
+    Saves a text file
+    Parameters
+    ----------
+    file_path: full (relative or absolute) path of the file to save
+    file_contents: string contents to save in the file
+
+    Returns
+    -------
+
+    """
+    with open(file_path, 'w') as f:
+        f.write(file_contents)

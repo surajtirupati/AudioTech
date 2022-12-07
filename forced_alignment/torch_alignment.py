@@ -3,6 +3,8 @@ import torchaudio
 from dataclasses import dataclass
 from typing import List, Tuple
 
+from utils.string_utils import convert_text_to_torch_input
+
 
 @dataclass
 class Segment:

@@ -51,4 +51,11 @@ class BatchRecognition:
 
         return
 
+    def re_synthesise_transcript(self):
+        """
+        Method that re-synethises the segments of the transcript from the dictionary to the full raw transcript
+        Returns
+        -------
 
+        """
+        pass

@@ -41,30 +41,34 @@ class TimeStamper:
         #  Splitting audio file
         no_slices, durations = self.slicer.export_splits()
 
-        # Batch recognition
+        #  Batch recognition
+        #  TODO: remove convert_text_to_torch_input from BatchRecognition and put it in TorchBatchAligner - so you can
+        #   recreate a raw transcript from the sub-transcripts meaning you only need to run whisper once
         br = BatchRecognition(self.output_folder, self.audio_file_name, self.recogniser_func, no_slices, durations, **self.kwargs)
         br.asr()
 
-        # Torch Alignment
+        #  Re-synthesise raw transcript from segments and paragraph
+        #  TODO: Call the re_synthesise_transcript method here and save it after doing the relevant paragraphing
+
+        #  Torch Alignment
         torch_batch_aligner = TorchBatchAligner(folder, filename, br.transcript_dict)
         timestamp_tuple = torch_batch_aligner.generate_timestamps()
 
         return timestamp_tuple
 
-    def sentence_timestamper(self, text_to_match: str) -> Dict[int, Dict[str, Union[Union[str, tuple], Any]]]:
+    def sentence_timestamper(self, text_to_match: str, ts_tuple: List[Tuple]) -> Dict[int, Dict[str, Union[Union[str, tuple], Any]]]:
         """
         This method finds the timestamps of each sentence within the text_to_match input
         Parameters
         ----------
         text_to_match: input text from the original transcript that is trying to be matched
-
+        ts_tuple: tuple of timestamps
         Returns
         -------
         Dictionary containing each sentence from text_to_match and it's start and end times
         """
         sentences = sent_tokenize(text_to_match)
         sent_word_lists = convert_sent_list_to_torch_input(sentences)
-        ts_tuple = self.generate_timestamp_tuple()
         words = [tup[0] for tup in ts_tuple]
 
         sentence_ts_output = {}
@@ -93,4 +97,5 @@ if __name__ == "__main__":
     kwarg_dict = {"model_name": "large"}
 
     ts = TimeStamper(filename, folder, r_func, **kwarg_dict)
-    timestamps = ts.sentence_timestamper(ex_sum)
+    ts_tup = ts.generate_timestamp_tuple()
+    timestamps = ts.sentence_timestamper(ex_sum, ts_tup)
