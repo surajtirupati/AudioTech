@@ -54,3 +54,20 @@ def save_txt_file(file_path: str, file_contents: str):
     """
     with open(file_path, 'w') as f:
         f.write(file_contents)
+
+
+def open_txt_file(file_path: str):
+    """
+    Opens a text file
+    Parameters
+    ----------
+    file_path: full (relative or absolute) path of the file to oepn
+
+    Returns
+    -------
+    Contents of the file
+    """
+    with open(file_path, 'r') as file:
+        data = file.read()
+
+    return data

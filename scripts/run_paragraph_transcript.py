@@ -12,8 +12,11 @@ if __name__ == "__main__":
     gpt3 = True
 
     #  Defining input file
-    filenames = ["../wavs/potential_customers/BELOW THE LINE - #136 — Future Therapeutics — Dr. Dan Engle.wav",
-                 "../wavs/potential_customers/BIGGER POCKETS - Achieve Financial Freedom in 2023 w⧸ Small Multifamily Investing.wav"]
+    filenames = ["../wavs/potential_customers/GAMACTICA - Episode #9.wav",
+                 "../wavs/potential_customers/HUAMN UPGRADE - HU - Zbiotic.wav",
+                 "../wavs/potential_customers/HUBERMAN LAB - Dr Layne Norton： The Science of Eating for Health, Fat Loss & Lean Muscle ｜ Huberman Lab Podcast #97.wav",
+                 "../wavs/potential_customers/KICKOFF SESSIONS - The Digital World is Changing ｜ Zennon Kapron ｜ Kickoff Sessions Podcast #118.wav",
+                 "../wavs/potential_customers/MICROACQUIRE - SaaS Acquisition Stories Podcast w⧸ JJ Englert, Founder of Jump Studios.wav"]
 
     for filename in filenames:
 
@@ -38,5 +41,5 @@ if __name__ == "__main__":
         paragraph_list, paragraphed_transcript = generate_paragraphs(final_transcript)
 
         #  Storing the paragraph text
-        with open('../audio_conversions/{}_Transcript.txt'.format(txt_filename.split(".")[0]), 'w') as f:
+        with open('../audio_conversions/potential_customers/{}_Transcript.txt'.format(txt_filename.split(".")[0]), 'w') as f:
             f.write(paragraphed_transcript)
