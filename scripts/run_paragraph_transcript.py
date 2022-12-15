@@ -12,10 +12,7 @@ if __name__ == "__main__":
     gpt3 = True
 
     #  Defining input file
-    filenames = ["../wavs/potential_customers/GAMACTICA - Episode #9.wav",
-                 "../wavs/potential_customers/HUAMN UPGRADE - HU - Zbiotic.wav",
-                 "../wavs/potential_customers/HUBERMAN LAB - Dr Layne Norton： The Science of Eating for Health, Fat Loss & Lean Muscle ｜ Huberman Lab Podcast #97.wav",
-                 "../wavs/potential_customers/KICKOFF SESSIONS - The Digital World is Changing ｜ Zennon Kapron ｜ Kickoff Sessions Podcast #118.wav",
+    filenames = ["../wavs/potential_customers/KICKOFF SESSIONS - The Digital World is Changing ｜ Zennon Kapron ｜ Kickoff Sessions Podcast #118.wav",
                  "../wavs/potential_customers/MICROACQUIRE - SaaS Acquisition Stories Podcast w⧸ JJ Englert, Founder of Jump Studios.wav"]
 
     for filename in filenames:
