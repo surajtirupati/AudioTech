@@ -15,15 +15,15 @@ if __name__ == "__main__":
 
     final_summary = ""
     summary_composition_dict = {"title": {},
-                                "summary": {},
-                                "takeaways": {}}
+                                "detailed_summary": {},
+                                "bullet_points": {}}
 
     for i, para in enumerate(aggregated_para_list):
         summary_composition_dict["title"][i] = gpt3_summariser(para, prompts["title"])[1:-1] if '"' or '"' in gpt3_summariser(para, prompts["title"]) else gpt3_summariser(para, prompts["title"])
-        summary_composition_dict["summary"][i] = gpt3_summariser(para, prompts["detailed_summary"])
-        summary_composition_dict["takeaways"][i] = gpt3_summariser(para, prompts["bullet_points"])
+        summary_composition_dict["detailed_summary"][i] = gpt3_summariser(para, prompts["detailed_summary"])
+        summary_composition_dict["bullet_points"][i] = gpt3_summariser(para, prompts["bullet_points"])
 
-        segment_text_final = summary_composition_dict["title"][i] + "\n\n" + summary_composition_dict["summary"][i] + "\n\n" + summary_composition_dict["takeaways"][i] + "\n\n"
+        segment_text_final = summary_composition_dict["title"][i] + "\n\n" + summary_composition_dict["detailed_summary"][i] + "\n\n" + summary_composition_dict["bullet_points"][i] + "\n\n"
         final_summary += segment_text_final
 
     save_txt_file(output_path, final_summary)
