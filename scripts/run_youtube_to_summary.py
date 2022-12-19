@@ -19,7 +19,7 @@ if __name__ == "__main__":
 
     ### Summary Inputs ###
     folder = "audio_conversions/youtube_vids"
-    prompts_to_use = ["title", "simplify"]
+    prompts_to_use = ["title", "simplify", "bullet_points"]
     aggregate_paras = True
 
     filenames = []  # empty list to store wav file paths

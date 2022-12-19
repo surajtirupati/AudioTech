@@ -5,9 +5,9 @@ from summarisation.gpt_summarisation import gpt3_summariser, prompts
 
 if __name__ == "__main__":
     #  Inputs
-    filenames = ["Metric Spaces - Lectures 1 & 2 Oxford Mathematics 2nd Year Student Lecture_Transcript.txt"]
-    folder = "audio_conversions/youtube_vids"
-    prompts_to_use = ["title", "detailed_summary", "bullet_points"]
+    filenames = ["Zero Equals One Creating A Business From Nothing  Riley Csernica  TEDxCharleston_Transcript.txt"]
+    folder = "audio_conversions/ted_talks"
+    prompts_to_use = ["bullet_points"]
     aggregate_paras = True
 
     for filename in filenames:
@@ -30,6 +30,9 @@ if __name__ == "__main__":
             for prompt_type in prompts_to_use:
                 if prompt_type == "title":
                     summary_composition_dict[prompt_type][i] = gpt3_summariser(para, prompts[prompt_type])[1:-1] if '"' or '"' in gpt3_summariser(para, prompts[prompt_type]) else gpt3_summariser(para, prompts[prompt_type])
+
+                elif prompt_type == "detailed_commentary" and "novel_business_insight" in prompts_to_use:
+                    summary_composition_dict[prompt_type][i] = gpt3_summariser(summary_composition_dict["novel_business_insight"][i], prompts[prompt_type])
 
                 else:
                     summary_composition_dict[prompt_type][i] = gpt3_summariser(para, prompts[prompt_type])
