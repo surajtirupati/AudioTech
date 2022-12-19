@@ -13,3 +13,7 @@ def subfinder(sub_list, original_list):
     else:
         print("Sentence: {} not found.".format(sub_list))
         return None, None
+
+
+def find_integer_strings_in_list(a_list: list) -> list:
+    return [i for i, s in enumerate(a_list) if s.isdigit()]

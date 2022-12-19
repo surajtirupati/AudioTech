@@ -103,3 +103,14 @@ def generate_transcript_from_list_of_para(para_list: List[str], bullet_points: b
             summary += f'{para}\n'
 
     return summary
+
+
+def find_text_between_substrings(text: str, start_substring: str, end_substring: str) -> list:
+    #  Compile a regular expression to match the start and end substrings
+    pattern = re.compile(f"{start_substring}(.*?){end_substring}", re.DOTALL)
+
+    #  Find all matches of the pattern in the text
+    matches = pattern.findall(text)
+
+    # Return the matches as a list
+    return matches

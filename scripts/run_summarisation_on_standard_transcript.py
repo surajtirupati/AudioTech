@@ -7,7 +7,7 @@ if __name__ == "__main__":
     #  Inputs
     filenames = ["Zero Equals One Creating A Business From Nothing  Riley Csernica  TEDxCharleston_Transcript.txt"]
     folder = "audio_conversions/ted_talks"
-    prompts_to_use = ["bullet_points"]
+    prompts_to_use = ["bullet_points"]  # ensure the prompt definitions are in the order you want them in the final document
     aggregate_paras = True
 
     for filename in filenames:
