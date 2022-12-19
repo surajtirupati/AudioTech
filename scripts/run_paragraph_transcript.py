@@ -1,22 +1,33 @@
-from utils.string_utils import append_file_extension
-from speech_recognition.openai_whisper_recognition import audio_to_text_whisper
-from summarisation.paragraphing import generate_paragraphs
-from utils.string_utils import count_words, count_char
-from punctuation_models.punctuation import punctuate_text
-
 import torch
 import gc
+
+from utils.string_utils import append_file_extension, count_words, count_char
+from utils.file_utils import convert_yt_link_to_wav_path
+from speech_recognition.openai_whisper_recognition import audio_to_text_whisper
+from summarisation.paragraphing import generate_paragraphs
+from punctuation_models.punctuation import punctuate_text
 
 
 if __name__ == "__main__":
     #  Defining word to full stop ratio to detect if punctuation required
     WORD_TO_FULL_STOP_TOL = 25
-    #  Boolean input to use or not use GPT3
-    gpt3 = True
+    #  YouTube boolean
+    youtube = True
 
-    #  Defining input file
-    filenames = ["../wavs/potential_customers/MY FIRST MILLION - How I Sold My Company To PayPal For $800 Million ｜ Bryan Johnson (#388).wav",
-                 "../wavs/potential_customers/NATHAN LATKA - How he sold his $2.3m SaaS with approx $500k EBITDA for $6m+ cash.wav"]
+    #  Processing for YouTube Files
+    if youtube:
+        output_folder = "../wavs/youtube_vids"
+        youtube_links = ["https://www.youtube.com/watch?v=yvaFeNLZ9s8&ab_channel=OxfordMathematics"]
+
+        filenames = []  # empty list to store file paths
+
+        for link in youtube_links:
+            wav_path = convert_yt_link_to_wav_path(link, output_folder)
+            filenames.append(wav_path)
+
+    else:
+        #  Defining input file paths
+        filenames = []
 
     for filename in filenames:
 
@@ -48,3 +59,5 @@ if __name__ == "__main__":
         #  Storing the paragraph text
         with open('../audio_conversions/potential_customers/{}_Transcript.txt'.format(txt_filename.split(".")[0]), 'w', encoding="utf-8") as f:
             f.write(paragraphed_transcript)
+
+        print("Completed: " + txt_filename.split(".")[0])
