@@ -32,5 +32,5 @@ def gpt3_summariser(text, prompt):
         prompt=prompt,
         max_tokens=int(max_tokens)
     )
-    summary = response["choices"][0]["text"].split("\n\n")[-1]
+    summary = response["choices"][0]["text"]
     return summary

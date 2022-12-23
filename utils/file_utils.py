@@ -6,7 +6,7 @@ import os
 import fitz
 import re
 
-from utils.list_utils import find_integer_strings_in_list
+from utils.list_utils import find_float_strings_in_list
 from utils.string_utils import append_file_extension, remove_special_characters, find_text_between_substrings
 
 
@@ -158,7 +158,7 @@ def extract_titles_from_page(page: fitz.fitz.Page, text: str) -> list:
     list containing the titles
     """
     bold_text = get_bold_text(page)
-    int_loc = find_integer_strings_in_list(bold_text)
+    int_loc = find_float_strings_in_list(bold_text)
 
     titles = []
 
@@ -213,7 +213,7 @@ def get_pdf_dict_of_sections(pdf_path: str) -> dict:
     order
     """
     document = fitz.open(pdf_path)
-    text = extract_text_from_pdf('C:/Users/Suraj/GitHub/Audio/pdfs/Sentence Embeddings using Siamese BERT-Networks.pdf')
+    text = extract_text_from_pdf('/files/pdfs/Sentence Embeddings using Siamese BERT-Networks.pdf')
     titles = extract_titles_from_document(document, text)
 
     sections = {"title": {},

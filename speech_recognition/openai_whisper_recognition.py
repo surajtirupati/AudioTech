@@ -1,7 +1,9 @@
 from typing import Callable
 from whisper import load_model
 
-from utils.string_utils import convert_text_to_torch_input
+from utils.string_utils import remove_special_characters, remove_char
+from punctuation_models.punctuation import punctuate_text
+from summarisation.paragraphing import generate_paragraphs
 
 
 def audio_to_text_whisper(file_name: str, model_name: str):
@@ -33,7 +35,7 @@ class BatchRecognition:
         self.kwargs = kwargs
         self.transcript_dict = {}
 
-    def asr(self, output_format="torch"):
+    def asr(self):
         for i in range(self.no_splits):
             filename = self.input_folder + "//" + str(i) + "_" + self.original_filename
 
@@ -43,19 +45,31 @@ class BatchRecognition:
             else:
                 transcript = self.recognition_func(filename)
 
-            if output_format == "torch":
-                self.transcript_dict[filename] = {"transcript": convert_text_to_torch_input(transcript)[:-1], "duration": self.durations[i]}
+            self.transcript_dict[filename] = {"transcript": transcript, "duration": self.durations[i]}
 
-            else:
-                self.transcript_dict[filename] = {"transcript": transcript, "duration": self.durations[i]}
+        return self.transcript_dict
 
-        return
-
-    def re_synthesise_transcript(self):
+    @staticmethod
+    def re_synthesise_transcript(transcript_dict, path_to_punctuator):
         """
         Method that re-synethises the segments of the transcript from the dictionary to the full raw transcript
+        Parameters
+        ----------
+        transcript_dict: dictionary containing transcripts of sections of sliced audio
+        path_to_punctuator: path to punctuation model
         Returns
         -------
 
         """
-        pass
+        transcript = ""
+        for key in transcript_dict.keys():
+            transcript += " " + transcript_dict[key]["transcript"]
+
+        transcript = remove_special_characters(transcript)
+        transcript = remove_char(transcript, ",")
+        transcript = transcript.lower()
+        final_transcript = punctuate_text(transcript, path_to_punctuator)
+        list_of_para, final_transcript_paragraphed = generate_paragraphs(final_transcript)
+
+        return final_transcript_paragraphed, list_of_para
+

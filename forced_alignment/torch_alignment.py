@@ -195,7 +195,9 @@ class TorchBatchAligner:
         offset = 0
 
         for slice_filepath in self.audio_dict.keys():
-            torch_aligner = TorchAligner(slice_filepath, self.audio_dict[slice_filepath]["transcript"], 44100, "|")
+            print("Processing: " + slice_filepath)
+            torch_transcript = convert_text_to_torch_input(self.audio_dict[slice_filepath]["transcript"])
+            torch_aligner = TorchAligner(slice_filepath, torch_transcript, 44100, "|")
             word_stamped_tuple = torch_aligner.generate_timestamp_tuple(offset)
             timestamp_tuple.extend(word_stamped_tuple)
             offset = offset + self.audio_dict[slice_filepath]["duration"]

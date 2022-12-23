@@ -14,12 +14,12 @@ WORD_TO_FULL_STOP_TOL = 25
 if __name__ == "__main__":
 
     ### YouTube Files Inputs ###
-    output_folder = "../wavs/youtube_vids"
-    youtube_links = ["https://www.youtube.com/watch?v=DeFhg7Ompvw&feature=youtu.be&ab_channel=MakingCSEasy"]
+    output_folder = "../files/wavs/youtube_vids"
+    youtube_links = ["https://www.youtube.com/watch?v=WHoWGNQRXb0&ab_channel=Greylock"]
 
     ### Summary Inputs ###
-    folder = "audio_conversions/youtube_vids"
-    prompts_to_use = ["title", "simplify", "bullet_points"]
+    folder = "../files/audio_conversions/youtube_vids"
+    prompts_to_use = ["title", "detailed_summary", "bullet_points"]
     aggregate_paras = True
 
     filenames = []  # empty list to store wav file paths
@@ -71,7 +71,7 @@ if __name__ == "__main__":
     for i, filename in enumerate(txt_filenames):
 
         #  I/O file paths
-        file_path = "../{}/{}".format(folder, filename)
+        file_path = "{}/{}".format(folder, filename)
         output_path = "../{}/summaries/{}_Summary.txt".format(folder, filename.split(".")[0])
 
         #  Opening the transcript and
@@ -89,6 +89,9 @@ if __name__ == "__main__":
             for prompt_type in prompts_to_use:
                 if prompt_type == "title":
                     summary_composition_dict[prompt_type][i] = gpt3_summariser(para, prompts[prompt_type])[1:-1] if '"' or '"' in gpt3_summariser(para, prompts[prompt_type]) else gpt3_summariser(para, prompts[prompt_type])
+
+                elif prompt_type == "detailed_commentary" and "novel_business_insight" in prompts_to_use:
+                    summary_composition_dict[prompt_type][i] = gpt3_summariser(prompts["novel_business_insight"], prompts[prompt_type])
 
                 else:
                     summary_composition_dict[prompt_type][i] = gpt3_summariser(para, prompts[prompt_type])

@@ -17,7 +17,10 @@ if __name__ == "__main__":
     #  Processing for YouTube Files
     if youtube:
         output_folder = "../wavs/youtube_vids"
-        youtube_links = ["https://www.youtube.com/watch?v=yvaFeNLZ9s8&ab_channel=OxfordMathematics"]
+        youtube_links = ["https://www.youtube.com/watch?v=fGuSJpOUVRc&ab_channel=SalesInsightsLab",
+                         "https://www.youtube.com/watch?v=4ostqJD3Psc&ab_channel=Moduslinktube",
+                         "https://www.youtube.com/watch?v=Roe_auEG31k&ab_channel=YaleCourses",
+                         "https://www.youtube.com/watch?v=53yPfrqbpkE&ab_channel=WaipaDistrictCouncil"]
 
         filenames = []  # empty list to store file paths
 
@@ -56,7 +59,7 @@ if __name__ == "__main__":
         paragraph_list, paragraphed_transcript = generate_paragraphs(final_transcript)
 
         #  Storing the paragraph text
-        with open('../audio_conversions/potential_customers/{}_Transcript.txt'.format(txt_filename.split(".")[0]), 'w', encoding="utf-8") as f:
+        with open('../audio_conversions/youtube_vids/{}_Transcript.txt'.format(txt_filename.split(".")[0]), 'w', encoding="utf-8") as f:
             f.write(paragraphed_transcript)
 
         print("Completed: " + txt_filename.split(".")[0])

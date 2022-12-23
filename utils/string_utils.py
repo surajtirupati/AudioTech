@@ -4,7 +4,7 @@ from typing import List
 
 
 def remove_special_characters(title: str):
-    special_characters = ['/', '?', '*', '|', ':', '<', '>', '"']
+    special_characters = ['/', '?', '*', '|', ':', '<', '>', '"', "."]
     for special_character in special_characters:
         if special_character in title:
             title = remove_char(title, special_character)
@@ -76,6 +76,8 @@ def convert_text_to_torch_input(string: str, separator: str = '|'):
     regex = regex.sub(separator, string)
     regex = remove_char(regex, "'")
     regex = [re.sub('(\d+)', lambda m: num2words(m.group()), sentence) for sentence in [regex]][0]
+    re_regex = re.compile("[^a-zA-Z0-9']")
+    regex = re_regex.sub(separator, regex)
     regex = regex.upper()
     return regex
 
@@ -84,11 +86,16 @@ def convert_sent_list_to_torch_input(sentences: List[str]):
     sent_word_lists = []
 
     for i, sent in enumerate(sentences):
-        temp_sent = convert_text_to_torch_input(sent).split("|")[:-1]
-        temp_sent = list(filter(lambda a: a != "", temp_sent))
+        temp_sent = convert_text_to_torch_list(sent)
         sent_word_lists.append(temp_sent)
 
     return sent_word_lists
+
+
+def convert_text_to_torch_list(text):
+    temp_text = convert_text_to_torch_input(text).split("|")[:-1]
+    temp_text = list(filter(lambda a: a != "", temp_text))
+    return temp_text
 
 
 def generate_transcript_from_list_of_para(para_list: List[str], bullet_points: bool = False):
