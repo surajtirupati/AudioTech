@@ -121,3 +121,11 @@ def find_text_between_substrings(text: str, start_substring: str, end_substring:
 
     # Return the matches as a list
     return matches
+
+
+def clean_up_empty_lines(text):
+    text = text.replace("\n\n\n\n", "\n\n")
+    text = text.replace("\n\n\n", "\n\n")
+    text = text.replace("\n\n \n", "\n\n")
+    text = text.replace("\n\n \n\n", "\n\n")
+    return text
