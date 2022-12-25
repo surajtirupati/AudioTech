@@ -112,3 +112,4 @@ networkx~=2.6.3
 punctuator~=0.9.6
 openai~=0.25.0
 backoff~=2.2.1
+spacy~=3.4.3
