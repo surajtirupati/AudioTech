@@ -53,3 +53,12 @@ def prompt_dict_formatting(summary_dict: dict, second_lvl_key: int) -> dict:
             formatted_dict[key] = remove_char(formatted_dict[key], "\n")
 
     return formatted_dict
+
+
+def remove_double_break_line_at_beginning(text: str):
+    formatted = "".join(text.split("\n\n")[1:])
+
+    if formatted == "":
+        formatted = text
+
+    return formatted

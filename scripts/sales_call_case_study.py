@@ -1,9 +1,9 @@
 import spacy
 
 from utils.file_utils import open_txt_file, save_txt_file
-from utils.string_utils import count_words
+from utils.string_utils import count_words, remove_char
 from utils.list_utils import subfinder_bool
-from summarisation.gpt_summarisation import gpt3_summariser, prompts
+from summarisation.gpt_summarisation import gpt3_summariser, prompts, remove_double_break_line_at_beginning
 
 
 def to_seconds(timestr):
@@ -101,21 +101,23 @@ if __name__ == "__main__":
     # Finding key insights and calls to action from potential client
     summary_dict = {}
     idx = 0
-    insights = ""
+    a_s = "".join(gpt3_summariser(transcript[:int(2000 * 4)],"What is the following conversation about? For the context; it is a SALES CALL. Include critical dialogue from the two speakers. Do not quote the conversation and start your answer with the beginning of your summary: ").split("\n\n")[1:])
+
+    insights = a_s + "\n\n"
     for key, value in transcript_dict.items():
         if transcript_dict[key]["Speaker"] == "Buyer":
             sent = transcript_dict[key]["Text"]
             wts = obtain_word_types(sent)
             if is_pattern_in_text(wts, patterns):
                 summary_dict[idx] = {"Time": transcript_dict[key]["Time"],
-                                     "Original": transcript_dict[key]["Text"],
+                                     "Original": remove_char(transcript_dict[key]["Text"], "\n"),
                                      "CTAs": gpt3_summariser(sent, "The following text is a conversation from a sales call where the seller is trying to a remote working software. The text is speech from the potential client. Please infer calls to action the seller can make specifically based on what the potential client has said in the following text: "),
                                      "Takeaways": gpt3_summariser(sent, prompts["bullet_points"])}
 
-                insights += summary_dict[idx]["Time"]
-                insights += "Original transcript: " + '"' + summary_dict[idx]["Original"] + '"'
-                insights += summary_dict[idx]["Takeaways"]
-                insights += summary_dict[idx]["CTAs"]
+                insights += summary_dict[idx]["Time"] + "\n"
+                insights += "Original transcript: " + '"' + summary_dict[idx]["Original"] + '"' + "\n\n"
+                insights += "Key Takeaways:\n" + remove_double_break_line_at_beginning(summary_dict[idx]["Takeaways"]).replace("\n\n", "\n") + "\n\n"
+                insights += "Calls to Action:\n" + remove_double_break_line_at_beginning(summary_dict[idx]["CTAs"]).replace("\n\n", "\n") + "\n\n"
                 idx += 1
 
     print()
