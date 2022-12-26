@@ -1,4 +1,5 @@
 import spacy
+from typing import List
 
 from utils.file_utils import open_txt_file, save_txt_file
 from utils.string_utils import count_words, remove_char
@@ -6,14 +7,14 @@ from utils.list_utils import subfinder_bool
 from summarisation.gpt_summarisation import gpt3_summariser, prompts, remove_double_break_line_at_beginning
 
 
-def to_seconds(timestr):
+def to_seconds(timestr: str) -> int:
     seconds = 0
     for part in timestr.split(':'):
         seconds = seconds*60 + int(part, 10)
     return seconds
 
 
-def total_time_spoken_by_speaker(t_dict, speaker):
+def total_time_spoken_by_speaker(t_dict: dict, speaker: str) -> int:
     total_seconds = 0
     for key, value in t_dict.items():
 
@@ -27,7 +28,7 @@ def total_time_spoken_by_speaker(t_dict, speaker):
     return total_seconds
 
 
-def total_words_per_speaker(t_dict, speaker):
+def total_words_per_speaker(t_dict: dict, speaker: str) -> int:
     num_words = 0
     for key, value in t_dict.items():
 
@@ -41,7 +42,7 @@ def total_words_per_speaker(t_dict, speaker):
     return num_words
 
 
-def aggregate_text_by_speaker(t_dict, speaker):
+def aggregate_text_by_speaker(t_dict: dict, speaker: str) -> str:
     total_text = ""
     for key, value in t_dict.items():
         if t_dict[key]["Speaker"] == speaker:
@@ -58,7 +59,7 @@ def aggregate_text_by_speaker(t_dict, speaker):
     return total_text
 
 
-def obtain_word_types(text):
+def obtain_word_types(text: str) -> List[str]:
     word_types = []
     nlp = spacy.load('en_core_web_sm', disable=['ner', 'textcat'])
     doc = nlp(text)
@@ -69,7 +70,7 @@ def obtain_word_types(text):
     return word_types
 
 
-def is_pattern_in_text(word_types, patterns):
+def is_pattern_in_text(word_types: List[str], patterns: List[str]) -> bool:
     for pattern in patterns:
         if subfinder_bool(pattern, word_types):
             return True
@@ -97,7 +98,6 @@ if __name__ == "__main__":
     #  NLP with spaCy: defining patterns
     patterns = [["PRON", "AUX", "ADV"], ["PRON", "AUX", "ADJ"], ["PRON", "AUX", "VERB"], ["PRON", "AUX", "PART", "VERB"], ["PRON", "VERB"], ["NOUN", "AUX", "ADJ"]]
 
-    # TODO: Cleanup the formatting here
     # Finding key insights and calls to action from potential client
     summary_dict = {}
     idx = 0
@@ -124,7 +124,8 @@ if __name__ == "__main__":
 
     save_txt_file("C:/Users/Suraj/GitHub/Audio/files/case_studies/AlexanderJames Sales Insights.txt", insights)
 
-    #  Metrics
+    # TODO: Package and include this analysis in final transcript
+    # Metrics
     seller_spoken_seconds = total_time_spoken_by_speaker(transcript_dict, "Seller")
     buyer_spoken_seconds = total_time_spoken_by_speaker(transcript_dict, "Buyer")
     total_time = seller_spoken_seconds + buyer_spoken_seconds
