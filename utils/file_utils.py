@@ -29,20 +29,20 @@ def yt_to_audio(link: str, output_path: Optional[str] = None):
     return vid_audio, vid_data.title
 
 
-def mp4_to_wav(file_path: str):
+def convert_to_wav(file_path: str, input_format: str = "mp4"):
     """
     Converts mp4 to wav using pydub AudioSegment
     Parameters
     ----------
     file_path: full path of file to convert
-
+    input_format: input file format
     Returns
     -------
     Nothing - method functionality is implicit; the wav file is rendered to the same location as the original mp4
     """
     AudioSegment.converter = which("ffmpeg")
     dest = append_file_extension(file_path[:-4], ".wav")
-    sound = AudioSegment.from_file(file_path, format="mp4")
+    sound = AudioSegment.from_file(file_path, format=input_format)
     sound.export(dest, format="wav")
     return
 
@@ -63,7 +63,7 @@ def convert_yt_link_to_wav_path(link: str, folder: str) -> str:
     audio_file, title = yt_to_audio(link, folder)
     title = remove_special_characters(title)
     mp4_path = folder + "/{}.mp4".format(title)
-    mp4_to_wav(mp4_path)
+    convert_to_wav(mp4_path)
     os.remove(mp4_path)
     wav_path = append_file_extension(mp4_path[:-4], ".wav")
     return wav_path
