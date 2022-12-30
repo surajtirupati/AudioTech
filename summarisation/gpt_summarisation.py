@@ -26,7 +26,7 @@ def gpt2_summariser(text, min_length: int = 30):
     return summary
 
 
-@backoff.on_exception(backoff.expo, (openai.error.RateLimitError, openai.error.APIConnectionError, openai.error.ServiceUnavailableError))
+@backoff.on_exception(backoff.expo, (openai.error.RateLimitError, openai.error.APIConnectionError, openai.error.ServiceUnavailableError, openai.error.APIError))
 def gpt3_summariser(text, prompt):
     prompt = prompt + text
     max_tokens = 4097 - len(prompt) / 4
