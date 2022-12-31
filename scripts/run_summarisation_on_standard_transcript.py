@@ -6,11 +6,11 @@ from summarisation.gpt_summarisation import gpt3_summariser, prompts, prompt_dic
 
 if __name__ == "__main__":
     #  Inputs
-    filenames = ["Metric Spaces - Lectures 1 & 2 Oxford Mathematics 2nd Year Student Lecture_Transcript.txt"]
+    filenames = ["Lightning Web Components - Episode 1 An Introduction_Transcript.txt"]
     folder = "../files/audio_conversions/youtube_vids"
-    prompts_to_use = ["title", "simplify", "bullet_points", "detailed_commentary"]  # ensure the prompt definitions are in the order you want them in the final document
+    prompts_to_use = ["title", "detailed_summary", "bullet_points"]  # ensure the prompt definitions are in the order you want them in the final document
     aggregate_paras = True
-    maths_worked_example = True
+    maths_worked_example = False
 
     for filename in filenames:
         #  I/O file paths

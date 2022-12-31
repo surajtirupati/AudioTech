@@ -189,9 +189,9 @@ class TimeStamper:
 
 if __name__ == "__main__":
     filename = "Andrew.wav"
-    file_folder = "files/wavs/blueprint_pods/"
+    file_folder = "../files/wavs/blueprint_pods/"
     slice_folder = "files/sliced_audio"
-    punctuation_path = "punctuation_models/Demo-Europarl-EN.pcl"
+    punctuation_path = "../punctuation_models/Demo-Europarl-EN.pcl"
     r_func = audio_to_text_whisper
     kwarg_dict = {"model_name": "small"}
 

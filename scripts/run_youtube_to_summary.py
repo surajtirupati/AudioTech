@@ -15,7 +15,7 @@ if __name__ == "__main__":
 
     ### YouTube Files Inputs ###
     yt_folder = "../files/wavs/youtube_vids"
-    youtube_links = ["https://www.youtube.com/watch?v=UbCnueaKwro&ab_channel=Absurd%26Fantastical"]
+    youtube_links = ["https://www.youtube.com/watch?v=FBKlTPcb614&ab_channel=SalesforceDevelopers"]
 
     ### Summary Inputs ###
     folder = "../files/audio_conversions/youtube_vids"
