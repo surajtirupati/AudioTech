@@ -1,10 +1,12 @@
-import spacy
 from typing import List
 
-from utils.file_utils import open_txt_file, save_txt_file
-from utils.string_utils import count_words, remove_char
-from utils.list_utils import subfinder_bool
+import spacy
+
 from summarisation.gpt_summarisation import gpt3_summariser, prompts, remove_double_break_line_at_beginning
+from utils.file_utils import open_txt_file, save_txt_file
+from utils.list_utils import subfinder_bool
+from utils.string_utils import count_words, remove_char
+from emotion_detection.text_to_emotion import convert_text_to_emotion_te, convert_text_to_emotion_lexmo
 
 
 def to_seconds(timestr: str) -> int:
@@ -95,13 +97,18 @@ if __name__ == "__main__":
 
         transcript_dict[i] = {"Speaker": speaker, "Text": text, "Time": time}
 
+    #  Detecting emotions of each speaker's text
+    for key, _ in transcript_dict.items():
+        transcript_dict[key]["TE: Text Emotions"] = convert_text_to_emotion_te(transcript_dict[key]["Text"])
+        transcript_dict[key]["Lexmo: Text Emotions"] = convert_text_to_emotion_lexmo(transcript_dict[key]["Text"])
+
     #  NLP with spaCy: defining patterns
     patterns = [["PRON", "AUX", "ADV"], ["PRON", "AUX", "ADJ"], ["PRON", "AUX", "VERB"], ["PRON", "AUX", "PART", "VERB"], ["PRON", "VERB"], ["NOUN", "AUX", "ADJ"]]
 
     # Finding key insights and calls to action from potential client
     summary_dict = {}
     idx = 0
-    a_s = "".join(gpt3_summariser(transcript[:int(2000 * 4)],"What is the following conversation about? For the context; it is a SALES CALL. Include critical dialogue from the two speakers. Do not quote the conversation and start your answer with the beginning of your summary: ").split("\n\n")[1:])
+    a_s = "".join(gpt3_summariser(transcript[:int(2000 * 4)], "What is the following conversation about? For the context; it is a SALES CALL. Include critical dialogue from the two speakers. Do not quote the conversation and start your answer with the beginning of your summary: ").split("\n\n")[1:])
 
     insights = a_s + "\n\n"
     for key, value in transcript_dict.items():
