@@ -12,7 +12,7 @@ if __name__ == "__main__":
     #  Defining word to full stop ratio to detect if punctuation required
     WORD_TO_FULL_STOP_TOL = 25
     #  YouTube boolean
-    youtube = True
+    youtube = False
 
     #  Processing for YouTube Files
     if youtube:
@@ -30,7 +30,8 @@ if __name__ == "__main__":
 
     else:
         #  Defining input file paths
-        filenames = []
+        filenames = ["../files/wavs/blueprint_pods/Cormac.wav",
+                     "../files/wavs/blueprint_pods/Pietro.wav"]
 
     for filename in filenames:
 
@@ -59,7 +60,7 @@ if __name__ == "__main__":
         paragraph_list, paragraphed_transcript = generate_paragraphs(final_transcript)
 
         #  Storing the paragraph text
-        with open('../audio_conversions/youtube_vids/{}_Transcript.txt'.format(txt_filename.split(".")[0]), 'w', encoding="utf-8") as f:
+        with open('../files/audio_conversions/startup_blueprint/{}_Transcript.txt'.format(txt_filename.split(".")[0]), 'w', encoding="utf-8") as f:
             f.write(paragraphed_transcript)
 
         print("Completed: " + txt_filename.split(".")[0])

@@ -20,7 +20,7 @@ def audio_to_text_whisper(file_name: str, model_name: str):
     transcribed speech in string format
     """
     model = load_model(model_name)
-    text = model.transcribe(file_name)
+    text = model.transcribe(file_name, initial_prompt="Welcome to the Startup Blueprint.\n\n")
     return text['text']
 
 

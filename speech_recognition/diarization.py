@@ -4,9 +4,12 @@ from pyannote.audio import Pipeline
 from pydub import AudioSegment
 import torch
 import gc
+from typing import Union
+from io import BytesIO
 
 from utils.file_utils import save_txt_file, convert_to_wav
 from speech_recognition.openai_whisper_recognition import audio_to_text_whisper
+from text_analytics.text_analysis import determine_if_question
 
 
 def split_audio_file_generate_transcript(start_sec, end_sec, audio_path, output_path):
@@ -19,7 +22,7 @@ def split_audio_file_generate_transcript(start_sec, end_sec, audio_path, output_
     return transcript
 
 
-def return_diarization_dictionary(file_path: str):
+def return_diarization_dictionary(file_path: Union[str, dict]):
     pipeline = Pipeline.from_pretrained('pyannote/speaker-diarization',
                                         use_auth_token="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")
     diarization = pipeline(file_path)
@@ -121,7 +124,7 @@ def re_index_keys_of_dict(dictionary: dict):
     return new_dict
 
 
-def generate_transcript_from_dict(file_path: str, diarization_dict: dict):
+def generate_transcript_from_dict(file_path: Union[str, BytesIO], diarization_dict: dict):
     final_transcript = ""
     for key in diarization_dict.keys():
         print("Processing Segement: {}".format(key))
@@ -139,12 +142,105 @@ def generate_transcript_from_dict(file_path: str, diarization_dict: dict):
     return final_transcript, diarization_dict
 
 
+def generate_diarized_transcript(file_path: str):
+    """
+    Returns a diarized transcript.
+    Parameters
+    ----------
+    file_path: file path of the audio file
+
+    Returns
+    -------
+    string: the diarized transcript as a string
+    """
+    diarized_dictionary = optimise_dict(re_index_keys_of_dict(optimise_dict(return_diarization_dictionary(file_path))))
+    diarized_transcript_str, diarized_dictionary = generate_transcript_from_dict(filepath, diarized_dictionary)
+    return diarized_transcript_str, diarized_dictionary
+
+
+def replace_speaker_names(d_dict: dict, seller_first_bool: bool = True):
+    first_speaker = "Seller" if seller_first_bool else "Buyer"
+    second_speaker = "Buyer" if seller_first_bool else "Seller"
+
+    for idx, key in enumerate(d_dict):
+        if idx % 2 == 0:
+            d_dict[key]["speaker"] = first_speaker
+        else:
+            d_dict[key]["speaker"] = second_speaker
+
+    return d_dict
+
+
+def total_time_spoken_by_speaker(t_dict: dict, speaker: str) -> int:
+    total_seconds = 0
+    for key, value in t_dict.items():
+
+        if key == list(t_dict.keys())[-1]:
+            break
+
+        if t_dict[key]["speaker"] == speaker:
+            seg_time = t_dict[key]["end"] - t_dict[key]["start"]
+            total_seconds += seg_time
+
+    return total_seconds
+
+
+def length_of_call_seconds(d_dict: dict) -> float:
+    return d_dict[len(d_dict) - 1]["end"]
+
+
+def number_of_questions_per_speaker(d_dict: dict, speaker: str):
+    count = 0
+    questions_asked = {}
+    for k, v in d_dict.items():
+        if d_dict[k]["speaker"] == speaker:
+            sentence_list = d_dict[k]["transcript"].split(".")
+
+            for sentence in sentence_list:
+                if determine_if_question(sentence.lower()):
+                    #  In case of multiples questions in the same sentence
+                    multiple_qs = [e + "?" for e in sentence.split("?") if e]
+                    for q in multiple_qs:
+                        if determine_if_question(q.lower()):
+                            questions_asked[count+1] = {"Question": q[1:]}
+                            count += 1
+
+    return len(questions_asked), questions_asked
+
+
+def longest_monologue(d_dict: dict, speaker: str) -> (float, str, float, float):
+    text = ""
+    max_monologue_len = 0
+    start_second = None
+    end_second = None
+    key_of_monologue = 0
+
+    for k, v in d_dict.items():
+        if d_dict[k]["speaker"] == speaker:
+            seg_monologue_len = d_dict[k]["end"] - d_dict[k]["start"]
+            seg_text = d_dict[k]["transcript"]
+            if seg_monologue_len > max_monologue_len:
+                max_monologue_len = seg_monologue_len
+                text = seg_text
+                start_second = d_dict[k]["start"]
+                end_second = d_dict[k]["end"]
+                key_of_monologue = k
+
+    monologue_prompt_text = d_dict[key_of_monologue - 1]["transcript"]
+    return max_monologue_len, text, start_second, end_second, monologue_prompt_text
+
+
 if __name__ == "__main__":
-    start_time = time.time()
     convert_to_wav("C:/Users/Suraj/GitHub/Audio/files/case_studies/Alexander Vilinskyy and James Stirrat.mp3", "mp3")
     filepath = "C:/Users/Suraj/GitHub/Audio/files/case_studies/Alexander Vilinskyy and James Stirrat.wav"
-    diarized_dict = optimise_dict(re_index_keys_of_dict(optimise_dict(return_diarization_dictionary(filepath))))
-    diarized_transcript, diarized_dict = generate_transcript_from_dict(filepath, diarized_dict)
-    end_time = time.time()
-    print(end_time - start_time)
+    diarized_transcript, diarized_dict = generate_diarized_transcript(filepath)
+
+    #  Post processing for conversation analytics
+    diarized_dict = replace_speaker_names(diarized_dict, False)
+    len_of_call = length_of_call_seconds(diarized_dict)
+    pct_spoken_by_seller = total_time_spoken_by_speaker(diarized_dict, "Seller")/(total_time_spoken_by_speaker(diarized_dict, "Seller") + total_time_spoken_by_speaker(diarized_dict, "Buyer"))
+    pct_spoken_by_buyer = total_time_spoken_by_speaker(diarized_dict, "Buyer")/(total_time_spoken_by_speaker(diarized_dict, "Seller") + total_time_spoken_by_speaker(diarized_dict, "Buyer"))
+    no_seller_questions, seller_questions = number_of_questions_per_speaker(diarized_dict, "Seller")
+    no_buyer_questions, buyer_questions = number_of_questions_per_speaker(diarized_dict, "Buyer")
+    buyer_monologue_duration, buyer_monologue, start_seconds, end_seconds, prompt_to_buyer_monologue = longest_monologue(diarized_dict, "Buyer")
     save_txt_file("C:/Users/Suraj/GitHub/Audio/files/case_studies/AlexanderJames_Diarized_Transcript.txt", diarized_transcript)
