@@ -30,8 +30,8 @@ if __name__ == "__main__":
 
     else:
         #  Defining input file paths
-        filenames = ["../files/wavs/blueprint_pods/Cormac.wav",
-                     "../files/wavs/blueprint_pods/Pietro.wav"]
+        filenames = ["../files/wavs/blueprint_pods/Yogesh.wav",
+                     "../files/wavs/blueprint_pods/Gautam.wav"]
 
     for filename in filenames:
 
