@@ -225,10 +225,10 @@ thinc==8.1.5
 threadpoolctl==3.1.0
 tinycss2==1.2.1
 tokenizers==0.13.2
-torch==1.13.0+cu117
+torch==1.13.0+cu117 --extra-index-url https://download.pytorch.org/whl/cu117
 torch-audiomentations==0.11.0
 torch-pitch-shift==1.2.2
-torchaudio==0.13.0 --extra-index-url https://download.pytorch.org/whl/cu117
+torchaudio==0.13.0
 torchmetrics==0.10.3
 torchvision==0.14.0
 tornado==6.2
