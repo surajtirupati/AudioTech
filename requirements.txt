@@ -235,7 +235,7 @@ tqdm==4.64.1
 traitlets==5.5.0
 transformers==4.24.0
 typer==0.7.0
-typing-extensions==4.4.0
+typing-extensions
 ujson==5.7.0
 urllib3==1.26.12
 uvicorn==0.20.0
