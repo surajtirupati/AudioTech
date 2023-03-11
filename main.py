@@ -9,6 +9,11 @@ from speech_recognition.diarization import return_diarization_dictionary, re_ind
 app = FastAPI()
 
 
+@app.get("/")
+async def simple_get_request():
+    return {"Hello": "World"}
+
+
 @app.post("/base_transcription")
 async def base_transcription(file: UploadFile = File(...)):
     wav_arr, _ = load(file.file._file)
