@@ -1,12 +1,11 @@
 import torch
 import gc
 
-from utils.string_utils import append_file_extension, count_words, count_char, clean_up_empty_lines
+from utils.string_utils import append_file_extension, clean_up_empty_lines
 from utils.file_utils import convert_yt_link_to_wav_path, open_txt_file, save_txt_file
 from speech_recognition.openai_whisper_recognition import audio_to_text_whisper
 from summarisation.paragraphing import generate_paragraphs, generate_paragraphs_from_treated_sentences
 from summarisation.gpt_summarisation import gpt3_summariser, prompts, prompt_dict_formatting
-from punctuation_models.punctuation import punctuate_text
 
 #  Defining word to full stop ratio to detect if punctuation required
 WORD_TO_FULL_STOP_TOL = 25
@@ -43,16 +42,7 @@ if __name__ == "__main__":
             torch.cuda.empty_cache()
 
         #  Conducting ASR with Whisper
-        raw_transcript = audio_to_text_whisper(filename, "small")
-
-        #  Assessing punctuation
-        words = count_words(raw_transcript)
-        full_stops = count_char(raw_transcript, ".")
-
-        if words / full_stops > WORD_TO_FULL_STOP_TOL:
-            final_transcript = punctuate_text(raw_transcript, '../punctuation_models/Demo-Europarl-EN.pcl')
-        else:
-            final_transcript = raw_transcript
+        final_transcript = audio_to_text_whisper(filename, "small")
 
         #  Generating paragraphs
         paragraph_list, paragraphed_transcript = generate_paragraphs(final_transcript)
